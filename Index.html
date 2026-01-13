@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARKZSCRIPTS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #000; color: #e4e4e7; margin: 0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .preview-window { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; overflow: hidden; min-height: 420px; }
+    .titlebar { background: #111111; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; border-bottom: 1px solid #1a1a1a; }
+    .traffic .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+    .card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; padding: 16px; }
+    .palette-item { background: #111111; border: 1px solid #222222; padding: 10px 8px; text-align: center; cursor: pointer; border-radius: 4px; font-size: 0.85rem; color: #cccccc; transition: all 0.15s; }
+    .palette-item:hover { background: #1a1a1a; color: #ffffff; border-color: #333333; }
+    .element { background: #111111; border: 1px solid #222222; border-radius: 4px; padding: 10px; margin: 6px 0; color: #dddddd; font-size: 0.9rem; }
+    .tab-name { cursor: pointer; padding: 4px 10px; border-radius: 4px; color: #aaaaaa; font-size: 0.9rem; margin-right: 8px; }
+    .tab-name:hover, .tab-name.active { background: #222222; color: #ffffff; }
+    #codeModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
+    #codeContent { background: #000000; border: 1px solid #222222; border-radius: 6px; width: 92%; max-width: 1000px; max-height: 88vh; overflow: hidden; display: flex; flex-direction: column; }
+    #codeHeader { background: #111111; padding: 12px 16px; border-bottom: 1px solid #222222; display: flex; justify-content: space-between; align-items: center; }
+    #codeDisplay { flex: 1; padding: 16px; overflow: auto; background: #000000; color: #bbbbbb; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; }
+    .btn-gray { background: #1a1a1a; color: #ffffff; border: 1px solid #333333; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+    .btn-gray:hover { background: #222222; }
+  </style>
+</head>
+<body>
+
+  <div class="max-w-7xl mx-auto p-4 md:p-6">
+    <!-- Tabs -->
+    <nav class="flex border-b border-[#1a1a1a] mb-8 overflow-x-auto">
+      <button class="tab-btn px-5 py-4 font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-400 active whitespace-nowrap" data-tab="home">Home</button>
+      <button class="tab-btn px-5 py-4 font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-tab="builder">UI Builder</button>
+      <button class="tab-btn px-5 py-4 font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-tab="obfuscation">Obfuscation</button>
+    </nav>
+
+    <!-- Home -->
+    <div id="home" class="tab-content">
+      <h1 class="text-3xl font-bold mb-8 text-white">DARKZSCRIPTS Dashboard</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="card text-center">
+          <h3 class="text-gray-500 mb-2">Total Scripts Protected</h3>
+          <p class="text-4xl font-bold text-white">0</p>
+        </div>
+        <div class="card text-center">
+          <h3 class="text-gray-500 mb-2">Encryption Standard</h3>
+          <p class="text-4xl font-bold text-white">LZ-AES</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+          <h3 class="text-lg font-semibold mb-4 text-white">&lt;&gt; Recent Scripts</h3>
+          <p class="text-center text-gray-600 py-20">No scripts found.</p>
+        </div>
+        <div class="card">
+          <h3 class="text-lg font-semibold mb-4 text-white">🌐 Active Webhooks</h3>
+          <p class="text-center text-gray-600 py-20">Create your first proxy</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- UI Builder -->
+    <div id="builder" class="tab-content hidden">
+      <h1 class="text-3xl font-bold mb-6 text-white">DARKZSCRIPTS UI Builder</h1>
+      <div class="flex border-b border-[#1a1a1a] mb-6">
+        <button class="sub-tab-btn px-5 py-3 font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-400 active" data-sub="windui">WindUI</button>
+        <button class="sub-tab-btn px-5 py-3 font-medium text-gray-400 hover:text-white border-b-2 border-transparent hover:border-gray-400" data-sub="neverlose">Neverlose</button>
+      </div>
+
+      <!-- WindUI -->
+      <div id="windui" class="sub-content">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div class="lg:col-span-1 space-y-6">
+            <div class="card">
+              <h2 class="text-lg font-semibold mb-4 text-white">SETTINGS</h2>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm text-gray-500 mb-1">WINDOW TITLE</label>
+                  <input id="w_title" type="text" value="DarkzScripts" class="w-full bg-[#0a0a0a] border border-[#222222] rounded px-3 py-2 text-white focus:border-gray-400 outline-none">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-500 mb-1">FOLDER NAME</label>
+                  <input id="w_folder" type="text" value="DarkzScripts" class="w-full bg-[#0a0a0a] border border-[#222222] rounded px-3 py-2 text-white">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-500 mb-1">THEME</label>
+                  <select id="w_theme" class="w-full bg-[#0a0a0a] border border-[#222222] rounded px-3 py-2 text-white">
+                    <option>Dark</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-white">TABS</h2>
+                <button id="w_addTab" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white text-sm">+</button>
+              </div>
+              <div id="w_tabsList" class="space-y-3 max-h-80 overflow-y-auto"></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="preview-window">
+              <div class="titlebar">
+                <div class="flex items-center gap-1">
+                  <div class="traffic flex">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                  </div>
+                </div>
+                <div id="previewTabs" class="flex gap-2 flex-wrap"></div>
+                <span class="text-gray-500 text-xs">Running</span>
+              </div>
+              <div id="w_previewContent" class="p-6"></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-1">
+            <div class="card">
+              <h2 class="text-lg font-semibold mb-4 text-white">Elements</h2>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="palette-item" data-type="Button">Button</div>
+                <div class="palette-item" data-type="Toggle">Toggle</div>
+                <div class="palette-item" data-type="Slider">Slider</div>
+                <div class="palette-item" data-type="Input">Input</div>
+                <div class="palette-item" data-type="Section">Section</div>
+                <div class="palette-item" data-type="Colorpicker">Colorpicker</div>
+                <div class="palette-item" data-type="Keybind">Keybind</div>
+              </div>
+              <button id="w_viewCodeBtn" class="mt-6 w-full bg-gray-700 hover:bg-gray-600 py-3 rounded font-medium text-white">View Code</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neverlose -->
+      <div id="neverlose" class="sub-content hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="card">
+            <h2 class="text-xl font-bold text-white mb-6">Neverlose UI Builder</h2>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm text-gray-500 mb-1">Window Title</label>
+                <input id="n_title" type="text" value="DarkzScripts" class="w-full bg-[#0a0a0a] border border-[#222222] rounded px-3 py-2 text-white">
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="n_keysys" type="checkbox" class="w-4 h-4 accent-gray-500">
+                <label class="text-sm text-gray-400">Enable Key System</label>
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="n_keybinds" type="checkbox" class="w-4 h-4 accent-gray-500">
+                <label class="text-sm text-gray-400">Enable Keybinds</label>
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="n_colors" type="checkbox" class="w-4 h-4 accent-gray-500">
+                <label class="text-sm text-gray-400">Enable Colorpickers</label>
+              </div>
+              <button id="n_generateBtn" class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded font-medium text-white mt-4">Generate Code</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <textarea id="n_output" class="w-full h-96 bg-black border border-[#222222] rounded p-4 mono text-gray-300 resize-y font-mono text-sm" readonly placeholder="Generated Neverlose code will appear here..."></textarea>
+            <div class="mt-4">
+              <button id="n_copyBtn" class="bg-gray-700 hover:bg-gray-600 px-5 py-2 rounded text-white">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Obfuscation -->
+    <div id="obfuscation" class="tab-content hidden">
+      <h1 class="text-3xl font-bold mb-6 text-white">DARKZSCRIPTS Obfuscator</h1>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card">
+          <h2 class="text-xl font-bold text-white mb-4">Input Script</h2>
+          <textarea id="inputScript" class="w-full h-[500px] bg-black border border-[#222222] rounded p-4 mono text-gray-300 resize-y font-mono text-sm" placeholder="Paste your Lua script here..."></textarea>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button id="obfuscateBtn" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded font-medium text-white">Obfuscate Script</button>
+            <button id="clearInputBtn" class="bg-gray-800 hover:bg-gray-700 px-5 py-3 rounded text-gray-300">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="text-xl font-bold text-white mb-4">Obfuscated Output</h2>
+          <textarea id="outputScript" class="w-full h-[500px] bg-black border border-[#222222] rounded p-4 mono text-green-300 resize-y font-mono text-sm" readonly placeholder="Obfuscated code will appear here..."></textarea>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button id="copyOutputBtn" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded font-medium text-white">Copy</button>
+            <button id="downloadOutputBtn" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded font-medium text-white">Download .lua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="codeModal">
+    <div id="codeContent">
+      <div id="codeHeader">
+        <h2 class="text-xl font-bold text-white">Generated Code</h2>
+        <button id="closeModalBtn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+      </div>
+      <pre id="codeDisplay" class="mono"></pre>
+      <div class="p-4 border-t border-[#222222] flex gap-4">
+        <button id="copyCodeBtn" class="btn-gray flex-1">Copy</button>
+        <button id="downloadCodeBtn" class="btn-gray flex-1">Download .lua</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'border-gray-400', 'text-white'));
+        btn.classList.add('active', 'border-gray-400', 'text-white');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(btn.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active', 'border-gray-400'));
+        btn.classList.add('active', 'border-gray-400');
+        document.querySelectorAll('.sub-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(btn.dataset.sub).classList.remove('hidden');
+      });
+    });
+
+    // WindUI Builder
+    let windTabs = [];
+    let selectedWindTabIndex = -1;
+
+    const wTabsList = document.getElementById('w_tabsList');
+    const previewTabsEl = document.getElementById('previewTabs');
+    const wPreviewContent = document.getElementById('w_previewContent');
+
+    document.getElementById('w_title').addEventListener('input', e => {
+      previewTabsEl.querySelectorAll('span').forEach(s => s.textContent = e.target.value || 'DarkzScripts');
+    });
+
+    document.getElementById('w_addTab').onclick = () => {
+      const name = prompt("Tab name:", "Main") || "Main";
+      windTabs.push({ name, elements: [] });
+      renderWindTabs();
+      selectWindTab(windTabs.length - 1);
+    };
+
+    function renderWindTabs() {
+      wTabsList.innerHTML = '';
+      windTabs.forEach((tab, i) => {
+        const div = document.createElement('div');
+        div.className = `p-3 rounded border cursor-pointer flex justify-between text-sm ${i === selectedWindTabIndex ? 'border-gray-400 bg-[#111]' : 'border-[#1a1a1a] bg-[#0a0a0a]'}`;
+        div.innerHTML = `<div><div class="text-white">${tab.name}</div><div class="text-xs text-gray-600">${tab.elements.length} elements</div></div><button class="text-gray-500 hover:text-red-400" onclick="deleteWindTab(${i})">×</button>`;
+        div.onclick = e => { if (e.target.tagName !== 'BUTTON') selectWindTab(i); };
+        wTabsList.appendChild(div);
+      });
+    }
+
+    function selectWindTab(i) {
+      selectedWindTabIndex = i;
+      renderWindTabs();
+      updateWindPreview();
+    }
+
+    function deleteWindTab(i) {
+      if (confirm("Delete tab?")) {
+        windTabs.splice(i, 1);
+        if (selectedWindTabIndex >= windTabs.length) selectedWindTabIndex = windTabs.length - 1;
+        renderWindTabs();
+        updateWindPreview();
+      }
+    }
+
+    function addWindElement(type) {
+      if (selectedWindTabIndex < 0) return alert("Select tab first");
+      const label = prompt(`Label for ${type}:`, type) || type;
+      windTabs[selectedWindTabIndex].elements.push({ type, label, callback: "" });
+      updateWindPreview();
+    }
+
+    function updateWindPreview() {
+      previewTabsEl.innerHTML = '';
+      windTabs.forEach((tab, i) => {
+        const span = document.createElement('span');
+        span.className = `tab-name ${i === selectedWindTabIndex ? 'active' : ''}`;
+        span.textContent = tab.name;
+        span.onclick = () => selectWindTab(i);
+        previewTabsEl.appendChild(span);
+      });
+
+      wPreviewContent.innerHTML = '';
+      if (selectedWindTabIndex < 0) return wPreviewContent.innerHTML = '<p class="text-gray-600 mt-32 text-center">Select/add tab</p>';
+      const tab = windTabs[selectedWindTabIndex];
+      let html = `<h3 class="text-white text-lg mb-4">${tab.name}</h3>`;
+      tab.elements.forEach((el, idx) => {
+        html += `<div class="element">`;
+        if (el.type === 'Button') html += `<button class="bg-gray-700 w-full py-2 rounded text-white text-sm">${el.label}</button>`;
+        else if (el.type === 'Toggle') html += `<div class="flex justify-between"><span class="text-gray-300">${el.label}</span><div class="w-10 h-5 bg-gray-700 rounded-full"><div class="w-4 h-4 bg-gray-300 rounded-full ml-1 mt-0.5"></div></div></div>`;
+        else if (el.type === 'Slider') html += `<div class="text-gray-300">${el.label}<div class="h-2 bg-gray-800 rounded-full mt-1"><div class="h-2 bg-gray-500 rounded-full w-3/5"></div></div></div>`;
+        else if (el.type === 'Input') html += `<input type="text" placeholder="${el.label}" class="w-full bg-[#000] border border-[#222] rounded px-3 py-2 mt-1 text-gray-300">`;
+        else if (el.type === 'Section') html += `<div class="font-bold border-b border-[#222] pb-2 mb-3 text-white">${el.label}</div>`;
+        else if (el.type === 'Colorpicker') html += `<div class="flex justify-between"><span class="text-gray-300">${el.label}</span><div class="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-600 rounded"></div></div>`;
+        else if (el.type === 'Keybind') html += `<div class="flex justify-between"><span class="text-gray-300">${el.label}</span><kbd class="bg-gray-800 px-2 py-1 rounded text-xs">CTRL+K</kbd></div>`;
+        html += `<button class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded mt-2" onclick="editCallback(${selectedWindTabIndex},${idx})">Put Code</button>`;
+        html += `</div>`;
+      });
+      wPreviewContent.innerHTML = html || '<p class="text-gray-600 mt-20 text-center">Add elements</p>';
+    }
+
+    function editCallback(tabIdx, elIdx) {
+      const current = windTabs[tabIdx].elements[elIdx].callback || "// your code here";
+      const cb = prompt("Custom callback (function(v) ... end):", current);
+      if (cb !== null) windTabs[tabIdx].elements[elIdx].callback = cb;
+    }
+
+    document.querySelectorAll('#windui .palette-item').forEach(item => {
+      item.addEventListener('click', () => addWindElement(item.dataset.type));
+    });
+
+    document.getElementById('w_viewCodeBtn').onclick = () => {
+      let code = `local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()\n\n`;
+      code += `local Window = WindUI:CreateWindow({ Title = "${document.getElementById('w_title').value.trim() || 'DarkzScripts'}", Theme = "${document.getElementById('w_theme').value}" })\n\n`;
+
+      windTabs.forEach((tab, i) => {
+        code += `local Tab${i} = Window:CreateTab("${tab.name}")\n`;
+        tab.elements.forEach(el => {
+          let cb = el.callback ? el.callback.trim() : 'function(v) -- your code end';
+          if (!cb.startsWith('function')) cb = `function(v) ${cb} end`;
+          code += `  Tab${i}:Create${el.type}("${el.label}", ${el.type === 'Toggle' || el.type === 'Slider' ? 'false, ' : ''}${cb})\n`;
+        });
+      });
+
+      document.getElementById('codeDisplay').textContent = code;
+      document.getElementById('codeModal').style.display = 'flex';
+    };
+
+    // Neverlose
+    document.getElementById('n_generateBtn').onclick = () => {
+      const title = document.getElementById('n_title').value.trim() || "DarkzScripts";
+      const keysys = document.getElementById('n_keysys').checked;
+      const keybinds = document.getElementById('n_keybinds').checked;
+      const colors = document.getElementById('n_colors').checked;
+
+      let code = `local NL = loadstring(game:HttpGet("https://raw.githubusercontent.com/Mana42138/Neverlose-UI/main/Source.lua"))()\n\n`;
+      code += `local Win = NL:Window({ Title = "${title}", CFG = "DarkzScripts_Config" })\n\n`;
+      code += `local TS = Win:TSection("Main")\n`;
+      code += `local Tab = TS:Tab("Features")\n`;
+      code += `local Sec = Tab:Section("Controls")\n\n`;
+
+      code += `Sec:Toggle("Example Toggle", function(v) print(v) end)\n`;
+      code += `Sec:Slider("Example Slider", 0, 100, 50, function(v) print(v) end)\n`;
+      if (keybinds) code += `Sec:Bind("Toggle Menu", function() end, {key=Enum.KeyCode.RightShift})\n`;
+      if (colors) code += `Sec:ColorPicker("Example Color", Color3.new(1,0,0), function(c) print(c) end)\n`;
+
+      document.getElementById('n_output').value = code;
+    };
+
+    document.getElementById('n_copyBtn').onclick = () => {
+      const text = document.getElementById('n_output').value;
+      if (text.trim()) navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+    };
+
+    // Obfuscation (same as before)
+    const XOR_KEY = 0x4B;
+    const junkTemplates = [
+      "local _ = math.random(1,99999); if _ > 100000 then end;",
+      "local _0xBEEF = 'dead'; if #_0xBEEF == 0 then return end;",
+      "for i=1,5 do local _ = i*0 end;",
+      "local _ = function() return nil end;",
+      "if false then print('never') end;"
+    ];
+
+    function xorEncrypt(str) {
+      let result = '';
+      for (let i = 0; i < str.length; i++) result += String.fromCharCode(str.charCodeAt(i) ^ XOR_KEY);
+      return btoa(result).replace(/=/g, '');
+    }
+
+    function generateRandomVar() {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+      let name = '_0x';
+      for (let i = 0; i < 8; i++) name += chars[Math.floor(Math.random() * chars.length)];
+      return name;
+    }
+
+    function obfuscateLua(code) {
+      if (!code.trim()) return '-- Paste code first';
+      code = code.replace(/--.*$/gm, '').replace(/^\s*$\n/gm, '').trim();
+
+      const varMap = new Map();
+      code = code.replace(/\blocal\s+([a-zA-Z_]\w*)\b/g, (m, n) => {
+        if (!varMap.has(n)) varMap.set(n, generateRandomVar());
+        return `local ${varMap.get(n)}`;
+      });
+
+      varMap.forEach((newN, oldN) => code = code.replace(new RegExp(`\\b${oldN}\\b`, 'g'), newN));
+
+      code = code.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (m, c) => c.length < 4 ? m : `"${xorEncrypt(c)}"`);
+
+      let lines = code.split('\n');
+      const newLines = [];
+      lines.forEach(l => {
+        newLines.push(l);
+        if (Math.random() > 0.6 && l.trim()) newLines.push('  ' + junkTemplates[Math.floor(Math.random() * junkTemplates.length)]);
+      });
+      code = newLines.join('\n');
+
+      const encoded = btoa(code);
+      return `-- Obfuscated by DARKZSCRIPTS\nlocal _0xD = "${encoded}";\nloadstring(game:HttpGet("https://pastebin.com/raw/XXXXXX"))(_0xD)()`;
+    }
+
+    document.getElementById('obfuscateBtn').onclick = () => {
+      const input = document.getElementById('inputScript').value.trim();
+      if (!input) return alert('Paste Lua code!');
+      document.getElementById('outputScript').value = obfuscateLua(input);
+    };
+
+    document.getElementById('clearInputBtn').onclick = () => {
+      document.getElementById('inputScript').value = '';
+      document.getElementById('outputScript').value = '';
+    };
+
+    document.getElementById('copyOutputBtn').onclick = () => {
+      const t = document.getElementById('outputScript').value;
+      if (t.trim()) navigator.clipboard.writeText(t).then(() => alert('Copied!'));
+    };
+
+    document.getElementById('downloadOutputBtn').onclick = () => {
+      const t = document.getElementById('outputScript').value;
+      if (!t.trim()) return;
+      const blob = new Blob([t], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'obf_darkzscripts.lua';
+      a.click();
+    };
+
+    // Modal
+    document.getElementById('closeModalBtn').onclick = () => document.getElementById('codeModal').style.display = 'none';
+    document.getElementById('copyCodeBtn').onclick = () => {
+      navigator.clipboard.writeText(document.getElementById('codeDisplay').textContent).then(() => alert('Copied!'));
+    };
+    document.getElementById('downloadCodeBtn').onclick = () => {
+      const t = document.getElementById('codeDisplay').textContent;
+      const blob = new Blob([t], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'darkzscripts_generated.lua';
+      a.click();
+    };
+
+    // Init WindUI
+    windTabs.push({ name: "Main", elements: [] });
+    selectedWindTabIndex = 0;
+    renderWindTabs();
+    updateWindPreview();
+  </script>
+</body>
+          </html>
